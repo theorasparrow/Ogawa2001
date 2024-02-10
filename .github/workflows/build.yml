@@ -3,8 +3,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:# Forks of mathlib and other projects should be able to use build_fork.yml directly
-# The jobs in this file run on self-hosted workers and will not be run from external for
+  build:
     name: Build
     runs-on: ubuntu-latest
     steps:
