@@ -1,57 +1,80 @@
--- import Mathlib,Data.Complex.Basic
+-- import Mathlib.Data.Complex.Basic
+-- import Mathlib.Analysis.InnerProductSpace.Adjoint
+-- import Mathlib.Analysis.InnerProductSpace.Spectrum
+-- import Mathlib.Analysis.NormedSpace.Exponential
+-- import Mathlib.LinearAlgebra.Trace
+-- import Mathlib.LinearAlgebra.Eigenspace.Basic
+-- import Mathlib.LinearAlgebra.TensorPower
+
 -- import Mathlib.Order.LiminfLimsup
 -- import Mathlib.Analysis.SpecialFunctions.Complex.Log
--- import Mathlib.Analysis.InnerProductSpace.Basic
--- import Mathlib.Analysis.InnerProductSpace.Spectrum
--- import Mathlib.Analysis.NormedSpace.MatrixExpsonential
--- import Mathlib.LinearAlgebra.Trace
--- import Mathlib.LinearAlgebra.TensorPower
--- import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 
-
--- open Real Filter
-
--- open_locale tensor_product big_operators
+-- open BigOperators NormedSpace Complex TensorProduct TensorPower -- Filter
 
 
-
--- class ComplexHilbertSpace (V : Type) [NormedAddCommGroup V] extends InnerProductSpace ℂ V :=
--- (hilbert_ness: 1=1)
-
--- variable {ℋ : Type} [NormedAddCommGroup ℋ] [ComplexHilbertSpace ℋ]
+-- postfix:1024 "†" => LinearMap.adjoint
+-- local notation "⟪" x ", " y "⟫" => @inner ℂ _ _ x y
 
 
--- def f (A X : ℋ →ₗ[ℂ] ℋ) := X* A X
+-- noncomputable section
 
 
-/- Lemma 3 -/
--- theorem convex_f_A (A : ℋ →ₗ[ℂ] ℋ) [nonneg A] (X Y : ℋ →ₗ[ℂ] ℋ) (t : ℝ) [0 ≤ t ∧ t ≤ 1] :
---     f A (t • X + (1-t) • Y) ≤ t • (f A X) + (1-t) • (f A Y) := by
---   have : t • (f A X) + (1-t) • (f A Y) - f A (t • X + (1-t) • Y) ≥ 0 :=
---     calc t • (f A X) + (1-t) • (f A Y) - f A (t • X + (1-t) • Y)
---                     = t • (X† A X) + (1-t) • (Y† A Y) - [t • X + (1-t) • Y]† A [t • X + (1-t) • Y] : by
---                       sorry -- rw [f]
---                     = t • (1-t) • [(X† A X) - (X† A Y) - (Y† A X) + (Y† A Y)] : by
---                       sorry -- linarith
---                     = t • (1-t) • (X-Y)† A (X-Y) : by
---                       sorry -- linarith
---                     ≥ 0 : by
---                       sorry -- prod_of_nonneg
---   linarith
+-- variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V]
 
 
--- def card_of_eigenvectors (A : ℋ →ₗ[ℂ] ℋ) : ℕ := sorry
--- notation:50 ν "(" A ")" => card_of_eigenvectors:50
+/- 0 ≤ A -/
+-- def nonneg (A : V →ₗ[ℂ] V) :=
+  -- ∀ x, 0 ≤ re ⟪x, A x⟫
+
+
+/- B ≤ A -/
+-- instance : LE (V →ₗ[ℂ] V) :=
+  -- ⟨fun A B => nonneg (B - A)⟩
+
+
+/- Trace of linear operator -/
+-- def Tr (A : V →ₗ[ℂ] V) : ℂ := LinearMap.trace ℂ V A
+
+
+/- Project onto subspace of eigenvectors w/ positive eigenvalues -/
+-- def proj_pos (A : V →ₗ[ℂ] V) (hA' : LinearMap.IsSymmetric A) (hn : FiniteDimensional.finrank ℂ V = n) :=
+  -- ∑ i, if (hA'.eigenvalues hn i) > 0 then (hA'.eigenvalues hn i) • (hA'.eigenvectorBasis hn i) else 0
+
+
+-- def card_of_eigenvectors {n : ℕ} (A : V →ₗ[ℂ] V) (hA : LinearMap.IsSymmetric A) (hn : FiniteDimensional.finrank ℂ V = n) :=
+  -- Fintype.card {i // hA.eigenvalues hn i ≠ 0}
+
+
+-- def f (A X : V →ₗ[ℂ] V) := X† * A * X
+
+
+/- Lemma 3: f A (t • X + (1-t) • Y) ≤ ( t • (f A X) + (1-t) • (f A Y) ) -/
+-- theorem convex_f_A (A : V →ₗ[ℂ] V) (h : 0 ≤ A) (X Y : V →ₗ[ℂ] V) (t : ℝ) (ht : 0 ≤ t ∧ t ≤ 1) :
+    -- 0 ≤ t • (f A X) + (1-t) • (f A Y) - f A (t • X + (1-t) • Y) := by
+  -- have h1 :
+      -- t • (f A X) + (1-t) • (f A Y) - f A (t • X + (1-t) • Y) = t • (1-t) • (X-Y)† * A * (X-Y) := by
+    -- calc t • (f A X) + (1-t) • (f A Y) - f A (t • X + (1-t) • Y)
+                    -- = t • (X† * A * X) + (1-t) • (Y† * A * Y) - (t • X + (1-t) • Y)† * A * (t • X + (1-t) • Y) := by
+                      -- rw [f]
+                      -- rw [f]
+                      -- rw [f]
+                  -- _ = t • (1-t) • ((X† * A * X) - (X† * A * Y) - (Y† * A * X) + (Y† * A * Y)) := by
+                      -- sorry -- linarith
+                  -- _ = t • (1-t) • (X-Y)† * A * (X-Y) := by
+                      -- sorry -- linarith
+  -- have h2 : 0 ≤ t • (1-t) • (X-Y)† * A * (X-Y) := by sorry -- prod_of_nonneg
+  -- rw [h1]
+  -- exact h2
 
 
 /- (13) -/
--- lemma card_of_evectors_le :
---     ν(σₙ) ≤ (n + 1)^d := by
+-- lemma card_of_evectors_le {n : ℕ} (A : V →ₗ[ℂ] V) (hA : LinearMap.IsSymmetric A) (hn : FiniteDimensional.finrank ℂ V = n) :
+--     card_of_eigenvectors A hA hn ≤ (n + 1)^d := by
 --   sorry -- type counting (Theorem 12.1.1 in [10])
 
 
--- def ψ(s) := - log Tr[ρ * σ^{s/2} * ρ^{-s} * σ^{s/2}]
+-- def ψ (s : ℝ) (ρ σ : V →ₗ[ℂ] V) := Complex.log ( Tr ( ρ * σ^(s/2) * ρ^(-s) * σ^(s/2) ) )
 
 
 -- lemma deriv_psi : ψ'(s) = D(ρ||σ) :=
@@ -79,48 +102,15 @@
 /- Simultaneously diagonalizable -/
 -- def simul_diag (A B) :=
 --   ∃ POVM P,
---     A = ∑ i, a i * P i ∧ B = ∑ i, b i * P i
+--     A = ∑ i, a i * P i ∧ B = ∑ i, b i * P
+-- exists set of eigenvectors M, such that A = \sum ai * Mi  and B = \sum bi * Mi
 
 
--- lemma diag_simul_iff_commute :
---     commute A B ↔ simul_diag A B :=
---   sorry -- linear_algebra
+-- lemma simul_diag_iff_commute :
+--     Commute A B ↔ simul_diag A B :=
+--   sorry
 
 
-/- Project onto subspace of eigenvectors w/ positive eigenvalues -/
--- def proj_pos (A : ℋ →ₗ[ℂ] ℋ) [A > 0] :=
--- ∑ i, if (A.eigenvalues i) > 0 then (A.eigenvalues i) * (A.eigenvectors i) else 0
-
-
-
-
--- variables {ℋ : Type} [complex_Hilbert_space ℋ]
-
--- notation ℋ`^⨂`n:max := ⨂[ℂ]^n ℋ
-
-
--- -- Operator trace, log, has_le, has_pow, pos_semidef
-
-
--- /-- Operators can be less than each other -/
--- instance {n : ℕ} : has_le (ℋ^⨂n →ₗ[ℂ] ℋ^⨂n) := sorry
-
-
--- instance {n : ℕ} : has_pow (ℋ^⨂n →ₗ[ℂ] ℋ^⨂n) ℝ := sorry
-
-
--- /-- log of operator -/
--- def operator.log {n : ℕ} (ρ : ℋ^⨂n →ₗ[ℂ] ℋ^⨂n) : ℋ^⨂n →ₗ[ℂ] ℋ^⨂n := sorry
-
-
--- /-- trace of operator -/
--- def Tr {n : ℕ} (ρ : ℋ^⨂n →ₗ[ℂ] ℋ^⨂n) : ℝ := sorry
-
--- def pos_semidef {n : ℕ} (ρ : ℋ^⨂n →ₗ[ℂ] ℋ^⨂n): Prop := sorry
-
-
--- /-- tensor power of operator -/
--- def tensor_pow_vec (σ : ℋ^⨂1 →ₗ[ℂ] ℋ^⨂1) (n : ℕ) :
--- ℋ^⨂n →ₗ[ℂ] ℋ^⨂n := sorry
-
--- notation σ`^⊗`n:max := tensor_pow_vec σ n
+/- operator B is log of operator A -/
+-- def is_op_log (A B : V →ₗ[ℂ] V) :=
+-- A = exp ℂ B
