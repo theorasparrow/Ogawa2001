@@ -1,2 +1,23 @@
+-- import Ogawa2001.Pinch
+
+
 /- Clever test Sₙ(a) -/
--- def Sₙ(a) := proj_pos ( (pinch σₙ ρₙ) - exp(n*a) * σₙ )
+-- def S (n : ℕ) (a : ℝ) := proj_pos ( (pinch (σ^⊗n) (ρ^⊗n)) - exp(n*a) * (σ^⊗n) )
+
+
+
+/-
+
+
+ ----------
+|          |                                     ඌ
+|     ι      _ _ _ _ ... n                      /|\
+|          |                                    / \
+ ----------
+
+
+
+
+                    make n outputs
+
+-/
