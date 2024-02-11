@@ -1,13 +1,14 @@
--- variables
--- (ρ : ℋ^⨂1 →ₗ[ℂ] ℋ^⨂1) [quantum_state ρ]
--- (σ : ℋ^⨂1 →ₗ[ℂ] ℋ^⨂1) [quantum_state σ]
+-- import Ogawa2001.State
 
 
+-- variables (ρ : V →ₗ[ℂ] V) (σ : V →ₗ[ℂ] V) [State ρ] [State σ]
 
 
-/- Probability of error of test: indicates σₙ when actually ρₙ -/
--- noncomputable def αₙ {n : ℕ} (Aₙ : ℋ^⨂n →ₗ[ℂ] ℋ^⨂n) := Tr(ρ^⊗n * (1 - Aₙ))
+/- Probability of error of test: indicates σ when actually ρ -/
+-- noncomputable def α (A : V →ₗ[ℂ] V) :=
+--   Tr(ρ * (1 - A))
 
 
-/- Probability of error of test: indicates ρₙ when actually σₙ -/
--- noncomputable def βₙ {n : ℕ} (Aₙ : ℋ^⨂n →ₗ[ℂ] ℋ^⨂n) := Tr[σ^⊗n * Aₙ]
+/- Probability of error of test: indicates ρ when actually σ -/
+-- noncomputable def β (A : V →ₗ[ℂ] V) :=
+--   Tr[σ * A]
